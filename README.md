@@ -15,6 +15,35 @@ A console game must coordinate movement, collisions, enemies, and progression. R
 
 The project separates boards, game objects, and game modes into C++ classes. Recording stores input steps and random seeds, while replay uses saved data and can compare game events with expected outcomes.
 
+## Highlights
+
+### Recording and replay through simulation steps
+
+Saved sessions record the difficulty, random seed, and input characters paired with iteration numbers. Replay reads those steps and initializes random generators from the stored seed. The result-checking mode compares recorded events, such as deaths and level completion, against the simulation's iteration count. This makes a session inspectable through its inputs and expected events; it is not a guarantee of identical behavior across every platform or compiler.
+
+See [Steps](Code%20Files/Steps.cpp), [Results](Code%20Files/Results.cpp), and [replay checking](Code%20Files/GameSilent.cpp).
+
+### State-based movement and collision rules
+
+Mario, barrels, and ghosts update their positions according to board tiles, movement direction, ladders, jumping, and falling state. Ghost behavior includes probabilistic direction choices with C++ random-number facilities. These are rule-based movement algorithms; the project does not implement a general shortest-path planner such as A*.
+
+### Polymorphic game objects and game modes
+
+C++ inheritance separates regular and special ghost behavior and organizes interactive, recording, and replay modes. Ghost collections use `std::unique_ptr`, tying object lifetime to ownership in the collection. Level layouts are loaded from `.screen` files, allowing board data to remain separate from movement logic.
+
+### Technologies and dependencies
+
+| Component | How it is used |
+| --- | --- |
+| **C++ standard library** | Containers, strings, file streams, smart pointers, and random-number generation such as `std::mt19937`. |
+| **Windows console API (`windows.h`)** | Console cursor positioning, visibility, and platform-specific presentation helpers. |
+| **Microsoft console I/O (`conio.h`)** | Keyboard input facilities used by the Windows console application. |
+| **Visual Studio / MSVC** | The included solution and project files configure the Windows C++ build. |
+| **Text-based level and recording formats** | `.screen`, `.steps`, and `.result` files store boards, session inputs, and expected outcomes. |
+
+The game uses standard-library and Windows platform facilities rather than a third-party game engine. Movement, collision rules, level handling, and replay logic are implemented in the project.
+
+
 ## What It Includes
 
 - Level loading from `.screen` files.
